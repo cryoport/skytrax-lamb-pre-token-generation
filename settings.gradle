@@ -1,0 +1,5 @@
+
+rootProject.name="skytrax-lamb-pre-token-generation"
+
+include("app")
+include("infra")
