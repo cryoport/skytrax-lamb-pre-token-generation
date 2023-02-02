@@ -1,0 +1,11 @@
+#Main configuration that applies to all environments
+mongo:
+  username: ${MONGO_USERNAME:}
+  password: ${MONGO_PASSWORD:}
+  host: ${MONGO_HOST:localhost}
+  schema: ${MONGO_SCHEMA:skytrax}
+  auth-source: ${MONGO_AUTH_SOURCE:documentdbadmin}
+  ssl: ${MONGO_SSL:true}
+mongodb:
+  uri: mongodb+srv://${mongo.username}:${mongo.password}@${mongo.host}/${mongo.schema}?authSource=${mongo.auth-source}&ssl=${mongo.ssl}&retryWrites=true&w=majority
+  package-names: com.cryoport.skytrax

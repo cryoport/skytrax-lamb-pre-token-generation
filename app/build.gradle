@@ -1,6 +1,9 @@
 plugins {
+    id("jacoco")
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.micronaut.application") version "3.7.0"
+    id("io.micronaut.test-resources") version "3.7.0"
+    id("org.sonarqube") version "3.4.0.2513"
 }
 
 version = "0.1"
@@ -8,22 +11,35 @@ group = "com.cryoport.skytrax"
 
 repositories {
     mavenCentral()
+    maven {
+        url "s3://skytrax-artifacts-repository"
+        credentials(AwsCredentials) {
+            accessKey SKYTRAX_MAVEN_USER
+            secretKey SKYTRAX_MAVEN_PASSWORD
+        }
+    }
 }
 
 dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
+    annotationProcessor("io.micronaut.data:micronaut-data-document-processor")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.0")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
+    implementation("io.micronaut.data:micronaut-data-mongodb")
+    implementation("io.micronaut.mongodb:micronaut-mongo-sync")
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("org.mongodb:mongodb-driver-sync")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:mongodb")
+    testImplementation("org.testcontainers:testcontainers")
     implementation("io.micronaut:micronaut-validation")
-
     implementation("io.micronaut.aws:micronaut-function-aws")
-
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime")
+    compileOnly("com.google.code.findbugs:jsr305")
 
 }
 
@@ -44,6 +60,36 @@ micronaut {
         annotations("com.cryoport.skytrax.*")
     }
 }
+
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.projectName', 'skytrax-lamb-pre-token-generation'
+        property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.organization', 'cryoport'
+        property 'sonar.projectKey', 'cryoport_skytrax-lamb-pre-token-generation'
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.jacoco.reportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+test.finalizedBy jacocoTestReport
+
+tasks.named('sonarqube').configure {
+    dependsOn test
+}
+
+
 
 
 

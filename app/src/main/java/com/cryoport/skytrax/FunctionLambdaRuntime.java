@@ -1,12 +1,15 @@
 package com.cryoport.skytrax;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime;
-import java.net.MalformedURLException;
+
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.CognitoUserPoolPreTokenGenerationEvent;
 import io.micronaut.core.annotation.Nullable;
-public class FunctionLambdaRuntime extends AbstractMicronautLambdaRuntime<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent, APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>
-{
+import io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime;
+
+import java.net.MalformedURLException;
+
+public class FunctionLambdaRuntime extends AbstractMicronautLambdaRuntime<
+        CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response,
+        CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response> {
     public static void main(String[] args) {
         try {
             new FunctionLambdaRuntime().run(args);
@@ -18,7 +21,8 @@ public class FunctionLambdaRuntime extends AbstractMicronautLambdaRuntime<APIGat
 
     @Override
     @Nullable
-    protected RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> createRequestHandler(String... args) {
+    protected RequestHandler<CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response>
+    createRequestHandler(String... args) {
         return new FunctionRequestHandler();
     }
 }

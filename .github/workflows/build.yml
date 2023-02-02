@@ -1,0 +1,43 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/build.gradle') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SKYTRAX_MAVEN_USER: ${{ secrets.SKYTRAX_MAVEN_USER }}
+          SKYTRAX_MAVEN_PASSWORD: ${{ secrets.SKYTRAX_MAVEN_PASSWORD }}
+          AWS_DEFAULT_REGION: us-west-1
+          AWS_REGION: us-west-1
+        run: |
+          ./gradlew app:sonarqube -PSKYTRAX_MAVEN_USER=$SKYTRAX_MAVEN_USER -PSKYTRAX_MAVEN_PASSWORD=$SKYTRAX_MAVEN_PASSWORD
+
