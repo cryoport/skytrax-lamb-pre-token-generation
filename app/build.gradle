@@ -52,6 +52,7 @@ java {
     targetCompatibility = JavaVersion.toVersion("17")
 }
 
+graalvmNative.toolchainDetection = false
 micronaut {
     runtime("lambda_java")
     testRuntime("junit5")
@@ -61,6 +62,13 @@ micronaut {
     }
 }
 
+tasks.named("dockerfileNative") {
+    args(
+            "-XX:MaximumHeapSizePercent=80",
+            "-Dio.netty.allocator.numDirectArenas=0",
+            "-Dio.netty.noPreferDirect=true"
+    )
+}
 
 jacocoTestReport {
     reports {

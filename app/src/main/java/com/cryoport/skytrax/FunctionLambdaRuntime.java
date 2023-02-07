@@ -8,8 +8,8 @@ import io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime;
 import java.net.MalformedURLException;
 
 public class FunctionLambdaRuntime extends AbstractMicronautLambdaRuntime<
-        CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response,
-        CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response> {
+        CognitoUserPoolPreTokenGenerationEvent, CognitoUserPoolPreTokenGenerationEvent,
+        CognitoUserPoolPreTokenGenerationEvent, CognitoUserPoolPreTokenGenerationEvent> {
     public static void main(String[] args) {
         try {
             new FunctionLambdaRuntime().run(args);
@@ -21,7 +21,7 @@ public class FunctionLambdaRuntime extends AbstractMicronautLambdaRuntime<
 
     @Override
     @Nullable
-    protected RequestHandler<CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response>
+    protected RequestHandler<CognitoUserPoolPreTokenGenerationEvent, CognitoUserPoolPreTokenGenerationEvent>
     createRequestHandler(String... args) {
         return new FunctionRequestHandler();
     }

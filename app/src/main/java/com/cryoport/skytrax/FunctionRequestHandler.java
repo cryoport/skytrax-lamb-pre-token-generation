@@ -5,11 +5,11 @@ import io.micronaut.function.aws.MicronautRequestHandler;
 
 import java.util.Map;
 
-public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserPoolPreTokenGenerationEvent.Request, CognitoUserPoolPreTokenGenerationEvent.Response> {
+public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserPoolPreTokenGenerationEvent, CognitoUserPoolPreTokenGenerationEvent> {
 
     @Override
-    public CognitoUserPoolPreTokenGenerationEvent.Response execute(CognitoUserPoolPreTokenGenerationEvent.Request input) {
-        return CognitoUserPoolPreTokenGenerationEvent.Response.builder()
+    public CognitoUserPoolPreTokenGenerationEvent execute(CognitoUserPoolPreTokenGenerationEvent event) {
+        var response =  CognitoUserPoolPreTokenGenerationEvent.Response.builder()
                 .withClaimsOverrideDetails(CognitoUserPoolPreTokenGenerationEvent.ClaimsOverrideDetails.builder()
                         .withGroupOverrideDetails(CognitoUserPoolPreTokenGenerationEvent.GroupConfiguration.builder()
                                 .withGroupsToOverride(new String[]{""})
@@ -20,6 +20,8 @@ public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserP
                         .withClaimsToSuppress(new String[]{""})
                         .build())
                 .build();
+        event.setResponse(response);
+        return event;
     }
 
 }
