@@ -1,0 +1,32 @@
+Resources:
+  SkytraxPreTokenGeneration:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Runtime: provided
+      Timeout: 1000
+      Architectures:
+      - arm64
+      Environment:
+        Variables:
+          MICRONAUT_ENVIRONMENTS:
+            Ref: MICRONAUT_ENVIRONMENTS
+          MONGO_USERNAME:
+            Ref: MONGO_USERNAME
+          MONGO_PASSWORD:
+            Ref: MONGO_PASSWORD
+          MONGO_HOST:
+            Ref: MONGO_HOST
+          MONGO_PORT:
+            Ref: MONGO_PORT
+          MONGO_SSL:
+            Ref: MONGO_SSL
+          MONGO_AUTH_SOURCE:
+            Ref: MONGO_AUTH_SOURCE
+          MONGO_SCHEMA:
+            Ref: MONGO_SCHEMA
+      ImageUri: skytraxpretokengeneration:latest
+    Metadata:
+      DockerContext: ../build/docker/native-main
+      Dockerfile: DockerfileNative
+      SamResourceId: SkytraxPreTokenGeneration
