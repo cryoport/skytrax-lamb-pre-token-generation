@@ -27,13 +27,17 @@ public class FunctionRequestHandlerTest extends BaseMongoDataTest{
 
     @Test
     void testHandler() {
-        CognitoUserPoolPreTokenGenerationEvent.Request request = CognitoUserPoolPreTokenGenerationEvent.Request
+
+        var request = CognitoUserPoolPreTokenGenerationEvent.Request
                 .builder()
                 .withClientMetadata(null)
                 .withUserAttributes(null)
                 .withGroupConfiguration(null)
                 .build();
-        CognitoUserPoolPreTokenGenerationEvent.Response response = handler.execute(request);
+        var event = CognitoUserPoolPreTokenGenerationEvent.builder()
+                .withRequest(request)
+                .build();
+        var response = handler.execute(event);
         assertNotNull(response);
 
     }
