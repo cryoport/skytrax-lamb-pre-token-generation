@@ -15,4 +15,4 @@ FROM frolvlad/alpine-glibc:alpine-3.12
 RUN apk --no-cache update && apk add libstdc++
 EXPOSE 8080
 COPY --from=graalvm /home/app/application /app/application
-ENTRYPOINT ["/app/application"]
+ENTRYPOINT ["/app/application", "-XX:MaximumHeapSizePercent=80", "-Dio.netty.allocator.numDirectArenas=0", "-Dio.netty.noPreferDirect=true"]
