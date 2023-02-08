@@ -43,4 +43,4 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TIMESTAMP_TAG
       - cd ..
       # - codebuild-breakpoint
-      - aws cloudformation create-stack --stack-name "skytrax-lamb-pre-token-generation" --template-body file://skytrax-lambda-cft-template.yml --capabilities CAPABILITY_IAM --parameters ParameterKey=lambdaImageUrl,ParameterValue="$REPOSITORY_URI:$IMAGE_TIMESTAMP_TAG"
+      - aws cloudformation update-stack --stack-name "skytrax-lamb-pre-token-generation" --template-body file://skytrax-lambda-cft-template.yml --capabilities CAPABILITY_IAM --parameters ParameterKey=lambdaImageUrl,ParameterValue="$REPOSITORY_URI:$IMAGE_TIMESTAMP_TAG"
