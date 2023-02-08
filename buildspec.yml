@@ -1,0 +1,46 @@
+version: 0.2
+env:
+  variables:
+    JAVA_HOME: "/usr/lib/jvm/java-17-amazon-corretto.x86_64/"
+phases:
+  install:
+        commands:
+            - yum install -y java-17-amazon-corretto-devel
+            - update-alternatives --auto javac
+            - update-alternatives --auto java  
+
+  pre_build:
+    commands:
+      - aws --version
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - echo $IMAGE_TAG
+  build:
+    commands:
+      - echo Build started on `date`
+      - TIMESTAMP=`(date  +"%Y%m%d%H%M%S")`
+      - echo "Current TimeStamp $TIMESTAMP"
+      - IMAGE_TIMESTAMP_TAG=$IMAGE_TAG-$TIMESTAMP  
+      - echo $IMAGE_TIMESTAMP_TAG
+      - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION # AWS_DEFAULT_REGION forced input to us-west-1 as the Shared/Common Dependency JARfolder is located in N. California region
+      - docker login -u cryodevops -p $DOCKERHUB_READ_TOKEN # Since We are using testcontainers while tests are executed, we are using docker as well and hence docker-login shall happen before mvn install command.
+      #- ./gradlew buildNativeLambda -Pmicronaut.runtime=lambda #this would build the image- so NO 'docker build' command to be used explicitly
+      - ./gradlew buildNativeLayersTask dockerPrepareContext -PSKYTRAX_MAVEN_USER=$SKYTRAX_MAVEN_USER -PSKYTRAX_MAVEN_PASSWORD=$SKYTRAX_MAVEN_PASSWORD
+      - pwd
+      - cd app
+      - docker build -t skytrax-lamb-pre-token-generation:latest .
+      - docker images
+      - docker tag skytrax-lamb-pre-token-generation:latest $REPOSITORY_URI:$IMAGE_TIMESTAMP_TAG
+
+
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) #here AWS_DEFAULT_REGION takes value from  Env Vairables of build project
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:$IMAGE_TIMESTAMP_TAG
+      - cd ..
+      # - codebuild-breakpoint
+      - aws cloudformation create-stack --stack-name "skytrax-lamb-pre-token-generation" --template-body file://skytrax-lambda-cft-template.yml --capabilities CAPABILITY_IAM --parameters ParameterKey=lambdaImageUrl,ParameterValue="$REPOSITORY_URI:$IMAGE_TIMESTAMP_TAG"
