@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template for Lambda Sample.
+Parameters:
+  EnvName:
+    Type: String
+    Description: Name of an environment. 'dev', 'staging', 'prod' and any name.
+    AllowedPattern: ^.*[^0-9]$
+    ConstraintDescription: Must end with non-numeric character.
+    Default: "dev" #Environment variable
+  LambdaFunc:
+    Type: String
+    Description: Name of the Lambda function
+    Default: "pre-token-generation"  #Change this parameter acc. to the lambda function name
+  lambdaImageUrl:
+    Type: String
+    Description: Skytrax condition Manager ECR image URI #Default value is passed from buildspec.yml file
+    
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: skytrax-lamb-${LambdaFunc}
+      Description: LambdaFunction 
+      Code:
+        # ImageUri: "832609808081.dkr.ecr.us-west-2.amazonaws.com/skytrax-lamb-event-mgr:latest"
+          ImageUri: !Ref lambdaImageUrl #URI value is passed from buildspec.yml file
+      MemorySize: 512
+      EphemeralStorage: 
+        Size: 512
+      PackageType: "Image"
+      Timeout: 15
+      Role: "arn:aws:iam::832609808081:role/skytrax-lambrole-event-mgr"
+      Environment:
+        Variables:
+          MICRONAUT_ENVIRONMENTS: !Ref EnvName
