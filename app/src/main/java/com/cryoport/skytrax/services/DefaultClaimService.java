@@ -27,17 +27,18 @@ public class DefaultClaimService implements ClaimsService {
 
     @Override
     public Map<String, String> getClaims(String[] groups) {
-        Map<String, String> result = new HashMap<>();
         try {
-            if (null == groups || groups.length == 0)
-                return Collections.emptyMap();
+            if (groups == null || groups.length == 0) return Collections.emptyMap();
             List<RolePrivilegeMappingEntity> rolePrivilegeMappingEntities = rolePrivilegeMappingRepository.findByRoleIn(groups);
-            Map<String, Set<String>> roleMap = rolePrivilegeMappingEntities.stream().collect(Collectors.toMap(mapping -> mapping.getCustomRoleName(), mapping -> mapping.getPrivileges()));
+            Map<String, Set<String>> roleMap = rolePrivilegeMappingEntities.stream()
+                    .collect(Collectors.toMap(RolePrivilegeMappingEntity::getCustomRoleName, RolePrivilegeMappingEntity::getPrivileges));
+            Map<String, String> result = new HashMap<>();
             result.put(PERMISSIONS, mapper.writeValueAsString(roleMap));
-            result.put(ROLE, String.join(",", roleMap.keySet().stream().collect(Collectors.joining(","))));
-        }catch (IOException e){
-            LOG.error("Error building permissions ",e);
+            result.put(ROLE, String.join(",", roleMap.keySet()));
+            return result;
+        } catch (IOException e) {
+            LOG.error("Error building permissions ", e);
+            return Collections.emptyMap();
         }
-        return result;
     }
 }
