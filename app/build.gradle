@@ -21,6 +21,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.cryoport.skytrax:skytrax-entity:0.2.0-SNAPSHOT")
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.data:micronaut-data-document-processor")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.0")
