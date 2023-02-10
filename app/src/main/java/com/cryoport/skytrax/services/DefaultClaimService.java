@@ -28,7 +28,6 @@ public class DefaultClaimService implements ClaimsService {
     @Override
     public Map<String, String> getClaims(String[] groups) {
         try {
-            if (groups == null || groups.length == 0) return Collections.emptyMap();
             List<RolePrivilegeMappingEntity> rolePrivilegeMappingEntities = rolePrivilegeMappingRepository.findByRoleIn(groups);
             Map<String, Set<String>> roleMap = rolePrivilegeMappingEntities.stream()
                     .collect(Collectors.toMap(RolePrivilegeMappingEntity::getCustomRoleName, RolePrivilegeMappingEntity::getPrivileges));

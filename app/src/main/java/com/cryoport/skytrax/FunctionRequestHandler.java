@@ -6,7 +6,6 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.function.aws.MicronautRequestHandler;
 import jakarta.inject.Inject;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserPoolPreTokenGenerationEvent, CognitoUserPoolPreTokenGenerationEvent> {
@@ -23,7 +22,7 @@ public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserP
 
     @Override
     public CognitoUserPoolPreTokenGenerationEvent execute(CognitoUserPoolPreTokenGenerationEvent event) {
-        if (hasGroupsToOverride.test(event)) {
+        if (hasGroups.test(event)) {
             String[] groups = event.getRequest().getGroupConfiguration().getGroupsToOverride();
             var response = CognitoUserPoolPreTokenGenerationEvent.Response.builder()
                     .withClaimsOverrideDetails(CognitoUserPoolPreTokenGenerationEvent.ClaimsOverrideDetails.builder()
@@ -37,9 +36,10 @@ public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserP
         return event;
     }
 
-    Predicate<CognitoUserPoolPreTokenGenerationEvent> hasGroupsToOverride =
+    private final Predicate<CognitoUserPoolPreTokenGenerationEvent> hasGroups =
             event -> event != null &&
                      event.getRequest() != null &&
                      event.getRequest().getGroupConfiguration() != null &&
-                     event.getRequest().getGroupConfiguration().getGroupsToOverride() != null;
+                     event.getRequest().getGroupConfiguration().getGroupsToOverride() != null &&
+                     event.getRequest().getGroupConfiguration().getGroupsToOverride().length > 0;
 }
