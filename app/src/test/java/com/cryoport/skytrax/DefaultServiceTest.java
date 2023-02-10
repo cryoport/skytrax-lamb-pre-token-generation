@@ -13,15 +13,15 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultServiceTest extends BaseMongoDataTest {
+class DefaultServiceTest extends BaseMongoDataTest {
     @Inject
     RolePrivilegeMappingRepository repository;
     @Inject
     ClaimsService service;
 
-    private final String PERMISSIONS = "permissions";
+    private static final String PERMISSIONS = "permissions";
 
-    private final String ROLE = "role";
+    private static final String ROLE = "role";
 
     @Test
     void VerifyGetClaims(){

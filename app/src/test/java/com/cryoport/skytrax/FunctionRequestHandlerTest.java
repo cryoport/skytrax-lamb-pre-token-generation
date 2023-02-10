@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest
-public class FunctionRequestHandlerTest extends BaseMongoDataTest{
+class FunctionRequestHandlerTest extends BaseMongoDataTest{
 
     @Inject
     RolePrivilegeMappingRepository repository;
