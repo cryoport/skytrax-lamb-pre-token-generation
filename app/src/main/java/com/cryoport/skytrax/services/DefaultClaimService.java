@@ -17,8 +17,8 @@ public class DefaultClaimService implements ClaimsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultClaimService.class);
 
-    private final String ROLE = "role";
-    private final String PERMISSIONS = "permissions";
+    private static final String ROLE = "role";
+    private static final String PERMISSIONS = "permissions";
 
     @Inject
     private ObjectMapper mapper;

@@ -33,7 +33,8 @@ public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserP
                         .withClaimsToSuppress(new String[]{""})
                         .build())
                 .build();
-        event.setResponse(response);
+        if(null != event)
+            event.setResponse(response);
         return event;
     }
 
