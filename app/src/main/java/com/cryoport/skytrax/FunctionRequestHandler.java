@@ -26,8 +26,6 @@ public class FunctionRequestHandler extends MicronautRequestHandler<CognitoUserP
             String[] groups = event.getRequest().getGroupConfiguration().getGroupsToOverride();
             var response = CognitoUserPoolPreTokenGenerationEvent.Response.builder()
                     .withClaimsOverrideDetails(CognitoUserPoolPreTokenGenerationEvent.ClaimsOverrideDetails.builder()
-                            .withGroupOverrideDetails(CognitoUserPoolPreTokenGenerationEvent.GroupConfiguration.builder()
-                                    .build())
                             .withClaimsToAddOrOverride(defaultClaimService.getClaims(groups))
                             .build())
                     .build();
