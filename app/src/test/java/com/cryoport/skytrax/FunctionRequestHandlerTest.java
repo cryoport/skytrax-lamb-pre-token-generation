@@ -5,7 +5,6 @@ import com.cryoport.skytrax.entity.RolePrivilegeMappingEntity;
 import com.cryoport.skytrax.repository.RolePrivilegeMappingRepository;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
-import org.apache.http.client.methods.RequestBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,17 +24,17 @@ class FunctionRequestHandlerTest extends BaseMongoDataTest{
 
 
 
-    private static FunctionRequestHandler FunctionRequestHandler;
+    private static FunctionRequestHandler handler;
 
     @BeforeAll
     void setupServer() {
-        FunctionRequestHandler = new FunctionRequestHandler(application.getApplicationContext());
+        handler = new FunctionRequestHandler(application.getApplicationContext());
     }
 
     @AfterAll
     void stopServer() {
-        if (FunctionRequestHandler != null) {
-            FunctionRequestHandler.getApplicationContext().close();
+        if (handler != null) {
+            handler.getApplicationContext().close();
         }
     }
 
@@ -50,7 +49,7 @@ class FunctionRequestHandlerTest extends BaseMongoDataTest{
         var event = CognitoUserPoolPreTokenGenerationEvent.builder()
                 .withRequest(request)
                 .build();
-        var response = FunctionRequestHandler.execute(event);
+        var response = handler.execute(event);
         assertNotNull(response);
     }
 
@@ -67,7 +66,7 @@ class FunctionRequestHandlerTest extends BaseMongoDataTest{
         var event = CognitoUserPoolPreTokenGenerationEvent.builder()
                 .withRequest(request)
                 .build();
-        var response = FunctionRequestHandler.execute(event);
+        var response = handler.execute(event);
         assertNotNull(response);
         assertNotNull(response.getResponse().getClaimsOverrideDetails());
         assertEquals("Admin",response.getResponse().getClaimsOverrideDetails().getClaimsToAddOrOverride().get("role"));
