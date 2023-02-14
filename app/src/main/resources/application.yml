@@ -9,3 +9,4 @@ mongo:
 mongodb:
   uri: mongodb+srv://${mongo.username}:${mongo.password}@${mongo.host}/${mongo.schema}?authSource=${mongo.auth-source}&ssl=${mongo.ssl}&retryWrites=true&w=majority
   package-names: com.cryoport.skytrax
+  
