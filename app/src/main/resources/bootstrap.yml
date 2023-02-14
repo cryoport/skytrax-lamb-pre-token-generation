@@ -6,3 +6,4 @@ micronaut:
 aws.client.system-manager.parameterstore:
   enabled: true
   use-secure-parameters: true
+  
